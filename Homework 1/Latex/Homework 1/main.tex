@@ -1,0 +1,146 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{amssymb}
+\title{CS 517 \\ Homework 1}
+\author{Ameyassh Nagarajan}
+\date{April 2024}
+
+\begin{document}
+
+\maketitle
+\section{Question 1}
+\subsection*{}
+\begin{enumerate}
+    \item Cantor's proof shows that if \( f : X \rightarrow \mathcal{P}(X) \), then there exists at least one value \( D \in \mathcal{P}(X) \setminus \text{range}(f) \). Prove that if \( X \) is infinite, then for any \( f : X \rightarrow \mathcal{P}(X) \), there are infinitely many values in \( \mathcal{P}(X) \setminus \text{range}(f) \).
+\end{enumerate}
+\subsection*{}
+Let \( f: \mathbb{N} \rightarrow P(\mathbb{N}) \) be a surjective function. This means that for every subset \( S \subseteq \mathbb{N} \), there exists an \( n \in \mathbb{N} \) such that \( f(n) = S \).
+\\
+\\
+Let us define our diagonal function \( D_i \) for each \( i \in \mathbb{N} \) as follows:
+\[
+D_i = \left\{ x \mid x \notin f(x) \land x \leq i \right\} \cup 
+\left\{ x + 1 \mid x + 1 \notin f(x) \land x > i + 1 \right\} \cup 
+\left\{ i+1 \mid i+1 \in f(i) \right\}
+\]
+We want to show that \( D_i \neq f(i) \) for all \( i,j,x \in \mathbb{N} \), and \( D_i \neq D_j \) for all \( i \neq j \).
+
+\subsection*{Building the 2 two-dimensional table}
+Let \( M \) be a two-dimensional table where each cell \( M(i,j) \) is defined as follows:
+\[
+M(i,j) = 
+\begin{cases} 
+1 & \text{if } i \in f(j), \\
+0 & \text{otherwise}.
+\end{cases}
+\]
+
+This table represents the membership of the element \( i \) in the subset \( f(j) \) for all \( i, j \in \mathbb{N} \).
+
+
+\newpage
+\subsection*{Proof}
+According to the construction of $D_i$, $D_i$ will differ with $f(i)$ at at-least one position in the two dimensional table and therefore $D_i$ will include at-least one set that is not a part of the subset $f(i)$ for all $i$. According to the construction of $D_i$ there are infinitely many Diagonals like that, the proof for the uniqueness of each diagonal is given below.
+\\
+\\
+Assume \( k \in \mathbb{N} \) and consider the diagonals $D_k$ and $D_k+1$, we get the following cases:
+
+\begin{itemize}
+\item If \( k+2 \in f(k + 1) \), then \( k+2 \notin D_k \) by the definition of \( D_k \).
+\item But \( k+2 \in D_k+1 \)
+\end{itemize}
+\bigskip
+This shows that the two diagonals $D_k$ and $D_{k+1}$ differ at the position $k+2$.
+Therefore, \( D_k \neq D_{k+1} \) which implies that \( D_i \neq D_j \) for all \( i \neq j \).
+\\
+\\
+And by definition of $D_i$ we can see that since $D_i$ disagrees with $f(i)$ and $f(i+1)$ at at-least one position $D_i \neq f(i)$
+\\
+\\
+Therefore, \( D_i \neq f(i) \) for all \( i \in \mathbb{N} \).
+\\
+\\
+Since, there are infinitely many natural numbers there are infinitely  many diagonals $D_i$ such that $D_i \neq D_j$ for all $i \neq j$, where $i,j \in \mathbb{N}$ and no surjective function $f$ can map the set of natural numbers to its power-set.
+
+% \section{Question 2}
+
+% \bigskip
+
+% \subsection*{Proof}
+% \subsubsection*{Direction 1}
+% \bigskip
+% Assuming that $L$ is decidable. There exists a Turing Machine $M$, that accepts any string $x$ if $x \in L$ and rejects $x$ if $x \notin L$. 
+
+% \bigskip
+% We can construct a TM $M'$ that runs $M$ and halts, accepts and rejects as $M$ halts, accepts and rejects.
+% Since, $M'$ can accept and reject a string $x \in L$ and $x \notin L$ respectively.
+% \\
+% \\
+% As $M'$ halts we can say that $L$ is also recognizable since that is one of the conditions of a language being recognizable and if $M'$ also rejects a string which is again a property of a recognizable language. Since $L$ is decidable its compliment $\overline{
+% L}$ can be decided using a Turing Machine $M''$ that inverts the decisions of $M'$, that is if $M'$ accepts, $M''$ rejects and if $M'$ rejects $M''$ accepts. 
+
+% \bigskip
+
+% Since $M''$  and $M'$ can accept any string that belongs in $\overline{L}$ and $L$ respectively, we can say that $L$ and $\overline{L}$ are recognizable.
+
+% \bigskip
+
+% \subsubsection{Direction 2}
+% Assuming that $L$ and $\overline{L}$ are decidable then there exists a Turing Machine $M$ and $\overline{M}$, that decides whether a given string belongs to the language. if a string $x \notin L$ then $x \in \overline{L}$ and the other way round.
+
+% \bigskip
+
+% We can use a Turing machine $M^*$ that runs $M$ and $\overline{M}$ parallelly at the same time, therefore if $M$ accepts a string $M^*$ accepts and halts and  if $\overline{M}$ accepts a string $M^*$ accepts and halts. 
+
+% \bigskip
+
+% Therefore since $M^*$ always halts if a string belongs to either $L$ or $\overline{L}$, the languages $L$ and $\overline{L}$ are decidable.
+
+
+
+\section{Question 2}
+Prove that a language \( L \) is decidable if and only if both \( L \) and its complement \( \overline{L} \) are recognizable.
+\\
+\\
+You must prove both directions:
+\begin{itemize}
+    \item Assuming \( L \) is decidable, show that \( L \) and its complement are recognizable.
+    \item Assuming \( L \) and \( \overline{L} \) are recognizable, show that \( L \) is decidable.
+\end{itemize}
+
+\subsection*{Proof}
+
+\subsubsection*{ If \( L \) is decidable, then \( L \) and \( \overline{L} \) are recognizable}
+Assume \( L \) is decidable. Then there exists a Turing machine \( M \) that decides \( L \), halting and accepting on inputs \( w \in L \) and halting and rejecting on inputs \( w \notin L \). A language is recognizable if there exists a Turing machine that halts and accepts for all inputs in the language, and halts or runs indefinitely otherwise. Since \( M \) decides \( L \), we can use \( M \) to construct Turing machines \( M' \) for \( L \) and \( M'' \) for \( \overline{L} \).
+\newpage
+Machine \( M' \) operates as follows:
+\begin{enumerate}
+    \item Simulate \( M \) on input \( w \).
+    \item If \( M \) accepts, then accept.
+    \item If \( M \) rejects, then halt.
+\end{enumerate}
+
+Machine \( M'' \) operates as follows:
+\begin{enumerate}
+    \item Simulate \( M \) on input \( w \).
+    \item If \( M \) accepts, then halt.
+    \item If \( M \) rejects, then accept.
+\end{enumerate}
+
+Since \( M \) halts on all inputs, both \( M' \) and \( M'' \) halt on all inputs where they accept, satisfying the condition for recognizability. Hence, \( L \) and \( \overline{L} \) are recognizable.
+
+\subsubsection*{ If \( L \) and \( \overline{L} \) are recognizable, then \( L \) is decidable}
+Now assume \( L \) and \( \overline{L} \) are recognizable by Turing machines \( M \) and \( \overline{M} \), respectively. We construct a decider Turing machine \( M^* \) for \( L \) that simulates \( M \) and \( \overline{M} \) in parallel on input \( w \).
+
+Machine \( M^* \) operates as follows:
+\begin{enumerate}
+    \item Create two simulation tapes: one for \( M \) and one for \( \overline{M} \).
+    \item Alternately simulate a step of \( M \) on the first tape and a step of \( \overline{M} \) on the second tape.
+    \item If the simulation of \( M \) accepts, halt and accept \( w \).
+    \item If the simulation of \( \overline{M} \) accepts, halt and reject \( w \).
+\end{enumerate}
+
+Since \( L \) and \( \overline{L} \) are complements, every input \( w \) belongs to either \( L \) or \( \overline{L} \), and either \( M \) or \( \overline{M} \) will eventually accept. By alternating simulations, \( M^* \) ensures that neither machine is favored, which prevents the scenario where \( M^* \) could run indefinitely due to one of the machines running indefinitely on inputs not in its language. Thus, \( M^* \) is a decider for \( L \), proving \( L \) is decidable.
+
+\end{document}
