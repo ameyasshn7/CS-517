@@ -1,0 +1,206 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage[colorlinks]{hyperref}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{float}
+\newtheorem{theorem}{Theorem}
+% Alwayws load this last
+\input{style.tex}
+
+\title{CS 517 \\ Homework 2}
+\author{Ameyassh Nagarajan}
+\date{April 2024}
+
+\begin{document}
+\maketitle
+\section{Problem 1}
+\begin{theorem}
+It is undecidable to determine whether a given context-free grammar (CFG) is ambiguous.
+\end{theorem}
+
+Determining whether a given context-free grammar (CFG) is ambiguous is undecidable.
+\end{theorem}
+
+\begin{proof}
+The proof of this theorem is based on reducing the Post Correspondence Problem (PCP), a well-known undecidable problem, to the problem of determining CFG ambiguity. 
+
+\textbf{Understanding PCP:}
+The PCP involves finding whether there exists a sequence of indices for two given lists of strings, \( U = (u_1, \ldots, u_m) \) and \( V = (v_1, \ldots, v_m) \), such that the concatenation of the strings from \( U \) using these indices equals the concatenation of the strings from \( V \) using the same sequence of indices. Formally, the challenge is to find if there exists a sequence \( (i_1, \ldots, i_k) \) such that \( u_{i_1} \cdots u_{i_k} = v_{i_1} \cdots v_{i_k} \).
+
+\textbf{CFG Construction:}
+We construct a CFG \( G \) designed to mimic the structure needed to represent possible solutions to PCP. The grammar \( G \) includes:
+\begin{itemize}
+    \item Non-terminal symbols \( S, A_1, \ldots, A_m, B_1, \ldots, B_m \).
+    \item Terminal symbols corresponding to each unique character found in the strings \( u_i \) and \( v_i \).
+    \item Production rules:
+    \begin{align*}
+    S &\rightarrow A_i S B_i \text{ for each } 1 \leq i \leq m, \\
+    A_i &\rightarrow u_i \text{ for each } 1 \leq i \leq m, \\
+    B_i &\rightarrow v_i \text{ for each } 1 \leq i \leq m, \\
+    S &\rightarrow \epsilon.
+    \end{align*}
+\end{itemize}
+
+These rules allow the grammar to generate sequences where any chosen string from \( U \) can be followed by its counterpart from \( V \) in reverse order, potentially interspersed with other such pairs, creating a palindromic structure if matched perfectly.
+
+\textbf{Link to PCP Solution:}
+If a solution to PCP exists (i.e., a sequence \( (i_1, \ldots, i_k) \) such that \( u_{i_1} \cdots u_{i_k} = v_{i_1} \cdots v_{i_k} \)), the CFG \( G \) constructed above will be able to generate the string \( u_{i_1} \cdots u_{i_k} v_{i_k} \cdots v_{i_1} \) in at least two ways:
+\begin{enumerate}
+    \item Directly through the use of \( S \rightarrow A_{i_1} S B_{i_1}, \ldots, A_{i_k} S B_{i_k} \) followed by \( S \rightarrow \epsilon \).
+    \item Potentially through another path if segments of \( U \) and \( V \) produce the same concatenation via a different sequence of productions.
+\end{enumerate}
+
+\textbf{Implications:}
+The existence of multiple parse trees for any string in the language of \( G \) signifies ambiguity in \( G \). Therefore, if we could determine whether \( G \) is ambiguous, we would effectively solve the PCP by constructing \( G \) and checking for its ambiguity. Since PCP is undecidable, the problem of determining whether \( G \) is ambiguous is also undecidable.
+
+This reduction shows that the undecidability of PCP directly implies the undecidability of determining CFG ambiguity.
+\end{proof}
+\pagebreak
+
+\section{Problem 2}
+\begin{theorem}
+The language $L = \{ \langle M \rangle \mid M \text{ is a Turing machine that has polynomial worst-case running time} \}$ is undecidable.
+\end{theorem}
+
+\begin{proof}
+Assume for the purpose of contradiction that $L$ is decidable. This implies the existence of a Turing machine $D$ which decides $L$. That is, given a description of a Turing machine $\langle M \rangle$, $D$ determines whether $M$ operates within polynomial worst-case running time for all inputs.
+
+We will show that this assumption leads to a contradiction by demonstrating that if such a $D$ existed, we could solve the Halting Problem, which is known to be undecidable. The Halting Problem asks whether a given Turing machine $M$ halts on a given input $w$.
+
+Let's construct a new Turing machine $M'$ based on any Turing machine $M$ and input $w$:
+
+\begin{enumerate}
+\item On input $x$, $M'$ simulates $M$ on $w$.
+\item If $M$ halts on $w$, then $M'$ enters a loop that will run for $|x|^k$ steps for some fixed $k$, before halting.
+\item If $M$ does not halt on $w$, then $M'$ also does not halt.
+\end{enumerate}
+
+We now use $D$ to decide if $\langle M' \rangle \in L$. If $D$ accepts, then by the construction of $M'$, $M$ must halt on $w$. If $D$ rejects, then $M$ does not halt on $w$. This decision procedure effectively solves the Halting Problem using $D$, which is a contradiction because the Halting Problem is undecidable.
+\\
+Therefore, our initial assumption that $L$ is decidable is false, and the language $L$ is undecidable.
+\end{proof}
+\pagebreak
+\section{Problem 3}
+\begin{theorem}
+If \( P = NP \), then for any language \( L \) in NP characterized by a witness-checking algorithm \( R \), there exists a polynomial-time algorithm \( M \) such that, on input \( x \) in \( L \), \( M(x) \) outputs a valid witness for \( x \), and on input \( x \notin L \), \( M(x) \) outputs the string "no witness".
+\end{theorem}
+
+\begin{proof}
+Let \( L \) be an arbitrary NP language with a witness-checking algorithm \( R \), such that \( L = \{x \mid \exists w : R(x, w) = 1\} \). Assume \( P = NP \).
+
+Define a language \( B \) as follows:
+\[ B = \{\langle x, y \rangle : \exists z \in \Sigma^* \text{ such that } |yz| \leq |x|^k + c \text{ and } R(\langle x, yz \rangle) \text{ accepts} \}. \]
+Here, \( k, c \in \mathbb{N} \) are constants ensuring that any string \( x \in L \) has a witness \( w \) of size at most \( |x|^k + c \).
+
+Since \( P = NP \), and we have constructed \( B \) such that it is in NP, \( B \) must also be in P. Therefore, there exists a polynomial-time algorithm \( M_B \) that decides \( B \).
+
+We now construct a polynomial-time Turing machine \( M \) which, given an input \( x \), produces a witness \( w \) for \( x \) if \( x \in L \), and outputs "no witness" otherwise. 
+
+Machine \( M \) operates as follows:
+\begin{enumerate}
+    \item On input \( x \), run \( M_B \) on \( \langle x, \epsilon \rangle \) to determine if \( x \in L \).
+    \item If \( M_B \) rejects, output "no witness".
+    \item If \( M_B \) accepts, incrementally construct the witness \( w \) by testing each bit extension using \( M_B \).
+    \item For each bit extension, run \( M_B(\langle x, w' \rangle) \) where \( w' \) is the current prefix of \( w \), extended by one bit (0 or 1).
+    \item When a prefix \( w' \) is found for which \( M_B \) accepts, adopt this prefix and extend the next bit.
+    \item Continue this process until the full witness \( w \) is constructed, such that \( R(\langle x, w \rangle) \) accepts.
+\end{enumerate}
+
+This construction ensures that \( M \) runs in polynomial time, as it only makes a polynomial number of calls to \( M_B \) and the input size for each call to \( M_B \) and \( R \) is at most \( O(|x|^k) \). Hence, we can conclude that if \( P = NP \), not only can we decide membership in \( L \) in polynomial time, but we can also find a valid witness in polynomial time.
+\end{proof}
+
+\pagebreak
+\section{Problem 4}
+\subsection{Part a}
+\begin{theorem}
+    \( NP = \{ L \mid L \leq_p SAT \} \)
+\end{theorem}
+\begin{proof}
+    
+
+\subsubsection*{Proof for \( L \in NP \implies L \leq_p SAT \)}
+Assume \( L \) is a language in NP. By definition, there exists a nondeterministic Turing machine (NTM) that decides \( L \) in polynomial time. We need to construct a polynomial-time reduction from \( L \) to SAT:
+
+\begin{enumerate}
+    \item Given an input \( x \) for \( L \), construct a Boolean formula \( \Phi \) that represents the computation of the NTM on \( x \).
+    \item Variables in \( \Phi \) represent the states, the tape content, and the head positions at each step.
+    \item Clauses in \( \Phi \) enforce the legality of the transitions according to the machine's transition function.
+    \item \( \Phi \) is satisfiable if and only if there is a sequence of transitions leading to an accepting state of the NTM.
+    \item The reduction from \( x \) to \( \Phi \) can be done in polynomial time since the NTM operates in polynomial time, and the size of \( \Phi \) is polynomially related to the size of the computation.
+\end{enumerate}
+
+Therefore, \( x \in L \) if and only if \( \Phi \) is satisfiable, implying that \( L \leq_p SAT \).
+
+\subsubsection*{Proof for \( L \leq_p SAT \implies L \in NP \)}
+Now assume \( L \leq_p SAT \). This implies there exists a polynomial-time computable function \( f \) such that for any string \( x \), \( x \in L \) if and only if \( f(x) \) is satisfiable.
+
+Given that SAT is in NP, there exists a nondeterministic polynomial-time Turing machine \( M_{\text{SAT}} \) that decides SAT. Since \( f \) is computable in polynomial time, use \( M_{\text{SAT}} \) to decide \( L \) as follows:
+
+\begin{enumerate}
+    \item On input \( x \), compute \( f(x) \).
+    \item Simulate \( M_{\text{SAT}} \) on \( f(x) \).
+    \item Accept \( x \) if \( M_{\text{SAT}} \) accepts \( f(x) \); otherwise, reject \( x \).
+\end{enumerate}
+
+This procedure shows that \( L \) can be decided by a nondeterministic Turing machine in polynomial time, thus \( L \in NP \).
+\end{proof}
+\subsubsection*{Conclusion}
+Both directions have been proven:
+\begin{itemize}
+    \item \( L \in NP \) implies \( L \leq_p SAT \), showing every language in NP can be reduced to SAT in polynomial time.
+    \item \( L \leq_p SAT \) implies \( L \in NP \), showing any language that can be reduced to SAT in polynomial time is in NP.
+\end{itemize}
+
+Therefore, we conclude \( NP = \{ L \mid L \leq_p SAT \} \), providing an alternative definition of NP.
+
+\subsection{Part b}
+
+
+\begin{theorem}
+A language \( L \) is NP-complete if and only if its complement \( \overline{L} \) is coNP-complete.
+\end{theorem}
+
+\begin{proof}
+We will prove the theorem in both directions.
+
+($\Rightarrow$) Assume that \( L \) is NP-complete. By definition, \( L \) is in NP, and every language \( M \) in NP has a polynomial-time reduction to \( L \). Because \( L \) is NP-complete, it is also NP-hard, which means every language \( N \) in NP is polynomial-time reducible to \( L \). For the complements of these languages in NP, which are in coNP, this implies that if \( N \in NP \), then \( \overline{N} \in coNP \). 
+
+Given a language \( \overline{N} \) in coNP, it polynomial-time reduces to \( \overline{L} \). If \( N \) reduces to \( L \), then a 'yes' instance of \( N \) translates to a 'yes' instance of \( L \), and a 'no' instance of \( N \) translates to a 'no' instance of \( L \). For the complements, a 'yes' instance of \( \overline{N} \) corresponds to a 'no' instance of \( N \), and thus to a 'yes' instance of \( \overline{L} \). Therefore, \( \overline{L} \) is coNP-hard. Since \( L \) is in NP, \( \overline{L} \) is in coNP, and hence \( \overline{L} \) is coNP-complete.
+
+($\Leftarrow$) Now assume \( \overline{L} \) is coNP-complete. Similarly, every language \( \overline{M} \) in coNP can be reduced in polynomial time to \( \overline{L} \), and therefore every language \( M \) in NP is reducible to \( L \) because the complements of languages in coNP are in NP. Thus, \( L \) is NP-hard. Given that \( \overline{L} \) is in coNP, \( L \) must be in NP. Hence, \( L \) is NP-complete.
+
+This proves that \( L \) is NP-complete if and only if \( \overline{L} \) is coNP-complete.
+\end{proof}
+
+% \begin{theorem}
+% A language \( L \) is NP-complete if and only if its complement \( \overline{L} \) is coNP-complete.
+% \end{theorem}
+
+% \begin{proof}
+% We will prove the theorem in both directions.
+
+% ($\Rightarrow$) First, assume that \( L \) is NP-complete. By definition, \( L \) is in NP, and for every language \( M \) in NP, there exists a polynomial-time reduction from \( M \) to \( L \). 
+% \\
+% Since \( L \) is NP-complete, it is also NP-hard, which means for every language \( N \) in NP, \( N \) polynomial-time reduces to \( L \). Now consider the complements of these languages in NP, which by definition are in coNP. Specifically, if \( N \in NP \), then \( \overline{N} \in coNP \).
+% \\
+% Given a language \( \overline{N} \) in coNP, we will show that \( \overline{N} \) polynomial-time reduces to \( \overline{L} \). Take the polynomial-time reduction from \( N \) to \( L \) and apply it to \( \overline{N} \). If \( N \) reduces to \( L \), then an instance of \( N \) that is a 'yes' instance translates to a 'yes' instance of \( L \), and a 'no' instance of \( N \) translates to a 'no' instance of \( L \). By flipping the answers because we are dealing with the complements, a 'yes' instance of \( \overline{N} \) corresponds to a 'no' instance of \( N \), which corresponds to a 'no' instance of \( L \), and hence a 'yes' instance of \( \overline{L} \).
+% \\
+% Therefore, \( \overline{L} \) is coNP-hard. And since \( L \) is in NP, \( \overline{L} \) is in coNP by definition. Hence \( \overline{L} \) is coNP-complete.
+% \\
+% ($\Leftarrow$) Conversely, assume that \( \overline{L} \) is coNP-complete. By the same argument but in reverse, we show that \( L \) is NP-complete. Every language \( \overline{M} \) in coNP can be reduced in polynomial time to \( \overline{L} \), which means that every language \( M \) in NP can be reduced to \( L \) (since the complements of languages in coNP are in NP).
+% \\
+% Thus, \( L \) is NP-hard. And since \( \overline{L} \) is in coNP, \( L \) must be in NP. Hence, \( L \) is NP-complete.
+% \\
+% This completes the proof that \( L \) is NP-complete if and only if \( \overline{L} \) is coNP-complete.
+% \end{proof}
+
+
+\end{document}
