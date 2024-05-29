@@ -1,0 +1,214 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\title{CS 517 \\ Homework 5}
+\author{Ameyassh Nagarajan}
+\date{May 2024}
+
+\begin{document}
+
+\maketitle
+\section{Problem 1}
+\section*{Proof}
+
+To show that \(\text{NP}^{\text{NP} \cap \text{coNP}} = \text{NP}\), we need to prove two inclusions: \(\text{NP}^{\text{NP} \cap \text{coNP}} \subseteq \text{NP}\) and \(\text{NP} \subseteq \text{NP}^{\text{NP} \cap \text{coNP}}\).
+
+\section*{Proof}
+
+To show that \(\text{NP}^{\text{NP} \cap \text{coNP}} = \text{NP}\), we need to prove two inclusions: \(\text{NP}^{\text{NP} \cap \text{coNP}} \subseteq \text{NP}\) and \(\text{NP} \subseteq \text{NP}^{\text{NP} \cap \text{coNP}}\).
+
+\section*{Proof}
+
+\subsection*{\(\text{NP}^{\text{NP} \cap \text{coNP}} \subseteq \text{NP}\) (→)}
+
+We need to show that any language that can be decided by a nondeterministic polynomial-time Turing machine with an oracle for \(\text{NP} \cap \text{coNP}\) can also be decided by a nondeterministic polynomial-time Turing machine without such an oracle.
+
+Suppose \(L \in \text{NP}^{\text{NP} \cap \text{coNP}}\). By definition, there exists a nondeterministic polynomial-time Turing machine \(M\) that decides \(L\) with access to an oracle for \(\text{NP} \cap \text{coNP}\).
+
+Since \(\text{NP} \cap \text{coNP} \subseteq \text{NP}\), any oracle query that \(M\) makes to \(\text{NP} \cap \text{coNP}\) can be simulated by an NP oracle. Therefore, \(M\) can be simulated by a nondeterministic polynomial-time Turing machine \(M'\) with access to an NP oracle.
+
+We know that \(\text{NP}^\text{NP} = \text{NP}\). Thus, a nondeterministic polynomial-time Turing machine with access to an NP oracle is still within the complexity class NP. Hence, \(\text{NP}^{\text{NP} \cap \text{coNP}} \subseteq \text{NP}\).
+
+For each oracle call \(y\), the NP machine can simulate this call by making its own nondeterministic guesses. The nondeterministic machine can guess a certificate for \(y\) and verify it in polynomial time using its own verification process.
+
+The overall process remains polynomial because each step (including the simulated oracle calls) is polynomial in time and the number of oracle calls is polynomially bounded. This means that the overall running time of the NP machine with an NP oracle remains polynomial.
+
+Since the NP machine can simulate the NP oracle using its own capabilities, any problem solvable by \(\text{NP}^\text{NP}\) can also be solved by an NP machine without the oracle. Therefore, \(\text{NP}^\text{NP}\) does not have more computational power than NP alone.
+
+We have shown that a nondeterministic polynomial-time Turing machine with access to an NP oracle can be simulated by a standard nondeterministic polynomial-time Turing machine. Hence, \(\text{NP}^\text{NP} = \text{NP}\). \\ Therefore, \(\text{NP}^{\text{NP} \cap \text{coNP}} \subseteq \text{NP}\).
+
+\subsection*{\(\text{NP} \subseteq \text{NP}^{\text{NP} \cap \text{coNP}}\) (←)}
+
+We need to show that any language in NP can also be decided by a nondeterministic polynomial-time Turing machine with access to an oracle for \(\text{NP} \cap \text{coNP}\).
+
+Suppose \(L \in \text{NP}\). By definition, there exists a nondeterministic polynomial-time Turing machine \(M\) that decides \(L\). We need to show that \(L\) can also be decided by a nondeterministic polynomial-time Turing machine \(N\) with access to an oracle for \(\text{NP} \cap \text{coNP}\).
+
+Any language in NP can be decided by a nondeterministic polynomial-time Turing machine with access to an oracle for \(\text{NP} \cap \text{coNP}\) because it does not need to use the oracle. Therefore, \(N\) can simulate \(M\) without using its oracle. Hence, \(\text{NP} \subseteq \text{NP}^{\text{NP} \cap \text{coNP}}\).
+
+\subsection*{Conclusion}
+
+Since we have shown both \(\text{NP}^{\text{NP} \cap \text{coNP}} \subseteq \text{NP}\) and \(\text{NP} \subseteq \text{NP}^{\text{NP} \cap \text{coNP}}\), it follows that
+\[
+\text{NP}^{\text{NP} \cap \text{coNP}} = \text{NP}.
+\]
+\pagebreak
+
+
+%-----------------------------------------------------%
+\section{Problem 2}
+Let \( M \) be an oracle Turing machine that is shrinking, meaning \( M \) queries its oracle only on strings strictly shorter than its input. Suppose a language \( A \) can be written as
+\[ A = \{ x \mid M^A(x) = 1 \}, \]
+where \( M \) is a polynomial-time shrinking oracle Turing machine. We aim to prove that such a language \( A \) is in PSPACE.
+
+\section*{Proof}
+
+To prove that \( A \in \text{PSPACE} \), we need to show that there exists a polynomial-space algorithm that decides membership in \( A \).
+
+The shrinking property of \( M \) ensures that on input \( x \), any oracle query made by \( M \) is to a string \( y \) such that \( |y| < |x| \). This recursive querying structure inherently limits the depth of queries.
+
+\subsection*{Simulation in Polynomial Space}
+
+We will simulate \( M \) using polynomial space without directly using the oracle for \( A \). Since \( M \) is a polynomial-time Turing machine, it uses at most \( p(|x|) \) time steps for some polynomial \( p \).
+
+\subsection*{Recursive Simulation}
+
+For input \( x \), we simulate \( M \) step-by-step. Whenever \( M \) makes an oracle query to a string \( y \) (with \( |y| < |x| \)), we pause the current simulation and recursively simulate \( M \) on \( y \).
+
+\subsection*{Stack Management}
+
+We use a stack to keep track of the simulation context at each level of recursion. Each stack frame stores the state of the Turing machine at the point of making an oracle query, which includes:
+\begin{itemize}
+    \item The tape content up to that point.
+    \item The head position.
+    \item The current state of the finite control.
+    \item The position in the input string \( x \).
+\end{itemize}
+The amount of information stored in each stack frame is \( O(p(|x|)) \).
+
+\subsection*{Depth of Recursion}
+
+The depth of recursion is bounded by the length of the input string \( |x| \) because each oracle query is to a strictly shorter string. The maximum depth of the recursion is therefore \( |x| \).
+
+\subsection*{Overall Space Usage}
+
+At each level of recursion, we use \( O(p(|x|)) \) space. The total space used by the stack is \( O(|x| \times p(|x|)) \), which is polynomial in \( |x| \).
+
+\section*{Polynomial-Space Algorithm}
+
+We can construct a polynomial-space algorithm that simulates \( M \) on input \( x \) as follows:
+
+\begin{enumerate}
+    \item \textbf{Base Case}: If \( x \) is sufficiently short (e.g., length 0), directly simulate \( M \) without any oracle queries.
+    \item \textbf{Recursive Case}: For input \( x \), simulate \( M \) and handle each oracle query \( y \) by recursively simulating \( M \) on \( y \).
+    \item Use a stack to keep track of the recursive calls, ensuring that at each level, the space used is polynomial in the input size.
+\end{enumerate}
+
+The recursion stack depth is at most \( |x| \), and each level uses polynomial space.
+
+\section*{Conclusion}
+
+By constructing a polynomial-space algorithm that simulates the shrinking oracle Turing machine \( M \), we have shown that the language \( A \) is in PSPACE. Thus, if \( A \) can be decided by a polynomial-time shrinking oracle Turing machine, then \( A \) is in PSPACE.
+\pagebreak
+
+%-------------------------------------------------%
+\section{Problem 3}
+\subsection*{State Representation}
+A state is defined by:
+\begin{itemize}
+    \item The position of the player \((x, y)\).
+    \item The positions of all \( k \) movable blocks.
+\end{itemize}
+Each state can be represented using \( O((n \times m) + k \log(n \times m)) \) bits, which is polynomial in \( n \) and \( m \).
+
+\subsection*{State Space Calculation}
+\begin{itemize}
+    \item The player can be in any of the \( n \times m \) cells.
+    \item Each of the \( k \) movable blocks can be in any of the \( n \times m \) cells, with no two blocks occupying the same cell.
+\end{itemize}
+The total number of states \( S \) is:
+\[
+S = (n \times m) \times \binom{n \times m}{k}
+\]
+where
+\[
+\binom{n \times m}{k} = \frac{(n \times m)!}{k! \times (n \times m - k)!}
+\]
+
+\subsection*{Why the algorithm uses PSPACE}
+While the total number of states is factorial, we can solve the problem using polynomial space by simulating state transitions without storing all states simultaneously.
+
+\subsubsection*{State Representation in Polynomial Space}
+Each state requires \( p((n \times m)\) bits, which is polynomial.
+\\
+A nondeterministic algorithm can guess the next move (player movement or block push) at each step, using polynomial space to keep track of the current state and sequence of moves. This approach simulates exploring the state space without explicitly storing the set of visited states.
+\\
+Since we have shown that \textbf{NPSPACE} = \textbf{PSPACE}.
+We can conclude that by using a nondeterministic approach to explore the state space and using the fact that \textbf{NPSPACE} = \textbf{PSPACE}, we can show that the problem is solvable using polynomial space. Thus, the problem of determining if the player can reach the target cell is in \textbf{PSPACE}, as it can be solved using a polynomial amount of space relative to the size of the input.
+
+\subsection*{Depth-First Search (DFS) Algorithm}
+\begin{itemize}
+    \item Start from the initial state.
+    \item For the current state, generate all possible next states by making legal moves.
+    \item Recursively explore each of the next states.
+    \item If a state leads to the target, the problem is solved.
+    \item If no more moves are possible, backtrack to the previous state and try the next possible move.
+\end{itemize}
+
+\subsection*{Handling Exponentially Many States}
+If there are exponentially many states after the current state, DFS remains feasible in terms of space complexity but faces challenges in terms of time complexity.
+
+\subsubsection*{Space Complexity}
+\begin{itemize}
+    \item \textbf{State Representation}: Each state is represented by the configuration of the board, which requires \(O(n \times m)\) space.
+    \item \textbf{Maximum Depth}: The maximum depth of the search tree corresponds to the maximum number of moves needed to reach the target, which is \(O(n \times m)\) in the worst case.
+    \item \textbf{Space Used}: The space required for the stack to store the current path is \(O(d \times s)\), where \(d\) is the depth of the tree and \(s\) is the space required to store a state. This results in \(O((n \times m)^2)\) space, which is polynomial in the size of the board.
+\end{itemize}
+
+\subsection*{Conclusion}
+Therefore, we have proved that the given problem is in \textbf{PSPACE}
+
+
+% \section*{Problem Statement}
+% Given the description of a game board (positions and types of blocks, and position of the player), and the location of a target, decide whether the player can reach the target.
+
+% \section*{Proof}
+
+% To show that this problem is in PSPACE, we need to demonstrate that there exists an algorithm that can solve the problem using polynomial space.
+
+% \subsection*{State Representation}
+% - Represent the game board as a 2D array of size \(n \times m\).\\
+% - Each cell can be empty, contain a fixed block, a moveable block, or the player.\\
+% - The state of the game is defined by the configuration of the board, including the positions of the player and the moveable blocks.
+
+% \subsection*{State Space Exploration}
+% - Use depth-first search (DFS) to explore all possible states from the initial state.\\
+% - At each step, generate the possible moves (e.g., moving the player or pushing a block).\\
+% - Explore one path at a time, backtracking when necessary.
+
+% \subsection*{Depth-First Search (DFS) Algorithm}
+% - Start from the initial state.\\
+% - For the current state, generate all possible next states by making legal moves.\\
+% - Recursively explore each of the next states.\\
+% - If a state leads to the target, the problem is solved.\\
+% - If no more moves are possible, backtrack to the previous state and try the next possible move.\\
+
+% \subsection*{Backtracking}
+% - When DFS reaches a state where no further moves are possible or all moves have been explored, it backtracks to the previous state.\\
+% - Only the current path in the DFS tree (from the root to the current node) needs to be stored in memory.\\
+% - This limits the memory usage to the depth of the DFS tree.\\
+
+% \subsection*{Space Complexity Analysis}
+% \begin{enumerate}
+%     \item \textbf{Depth of Search}: The depth of the DFS tree is bounded by \(O(n \times m)\), as this is the maximum number of moves the player might need to reach the target.
+%     \item \textbf{Space per State}: Each state can be stored using \(O(n \times m)\) space to represent the board configuration.
+%     \item \textbf{Total Space}: The total space used by DFS is the product of the maximum depth of the search and the space needed per state. This gives a space complexity of \(O((n \times m) \times (n \times m)) = O((n \times m)^2)\), which is polynomial.
+% \end{enumerate}
+
+% \section*{Conclusion}
+% Since we have shown that the problem can be solved using a polynomial amount of space by exploring the state space with DFS and backtracking as necessary, we conclude that the problem is in PSPACE.
+
+\end{document}

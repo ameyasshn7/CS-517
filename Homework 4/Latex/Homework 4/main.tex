@@ -1,0 +1,405 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\newtheorem{theorem}{Theorem}
+\usepackage{float}
+\usepackage[margin=1in]{geometry}
+\usepackage{mdframed}
+
+\title{Homework 4}
+\author{Ameyassh Nagarajan}
+\date{May 2024}
+
+\begin{document}
+\maketitle
+\section{Problem 1}
+% \section*{Theorem}
+% There exists an oracle \(B\) such that \(\text{NP}^B \neq \text{coNP}^B\).
+
+% \section*{Proof}
+
+% \noindent \textbf{Step 1: Define the Language \(L_B\)}
+
+% Consider the language \(L_B\) defined as follows:
+% \[ L_B = \{ x \mid \exists y \text{ such that } |y| = |x| \text{ and } y \in B \}. \]
+
+% \noindent \textbf{Step 2: Initialize the Oracle \(B\)}
+
+% We start with an empty oracle \( B = \emptyset \).
+
+% \noindent \textbf{Step 3: Enumerate Polynomial-Time Verifiers}
+
+% Let \( (V_1, p_1), (V_2, p_2), \ldots \) be an enumeration of all polynomial-time verifiers for NP languages, where \(V_i\) is a polynomial-time verifier and \( p_i \) is the polynomial bound on its running time.
+
+% \noindent \textbf{Step 4: Diagonalization Process}
+
+% We define the oracle \(B\) using an enumerator. That is, \(B\) is the set of strings printed by the following process:
+
+% \begin{algorithm}
+% \caption{Construct Oracle \(B\)}
+% \begin{algorithmic}[1]
+% \STATE Initialize \( S_1 := \emptyset \).
+% \FOR{$i = 1, 2, \ldots$}
+%     \STATE Let \( n_i \) be the smallest integer such that:
+%     \begin{itemize}
+%         \item For all \( j < i \), \( n_i > p_j(n_j) \).
+%         \item \( n_i > p_i(n_i) \).
+%     \end{itemize}
+%     \STATE Let \( x_i = 0^{n_i} \) (a string of \( n_i \) zeros).
+%     \STATE Let \( y_i \) be the lexicographically least string of length \( n_i \) that is not used as an oracle query by \( V_i \) on input \( x_i \) within \( p_i(|x_i|) \) steps.
+%     \IF{$V_i^{S_i}(x_i, y_i) = 1$}
+%         \STATE Add \( y_i \) to \( S_i \).
+%         \STATE Set \( S_{i+1} := S_i \cup \{ y_i \} \).
+%     \ELSE
+%         \STATE Set \( S_{i+1} := S_i \).
+%     \ENDIF
+% \ENDFOR
+% \end{algorithmic}
+% \end{algorithm}
+
+% \noindent \textbf{Step 5: Ensuring \(L_B \in \text{NP}^B\)}
+
+% By construction, \(L_B\) is in \( \text{NP}^B \) because for any \( x \in L_B \), there exists a \( y \) such that \( |y| = |x| \) and \( y \in B \). An NP machine with access to oracle \(B\) can guess \(y\) and verify that \( y \in B \) using the oracle.
+
+% \noindent \textbf{Step 6: Ensuring \(L_B \notin \text{coNP}^B\)}
+
+% To show that \( L_B \notin \text{coNP}^B \), we need to demonstrate that no polynomial-time coNP verifier can refute all instances in \( L_B \).
+
+% \begin{enumerate}
+%     \item For each polynomial-time coNP verifier \( D_i \) with oracle access to \( B \):
+%     \begin{itemize}
+%         \item Suppose \( D_i \) tries to refute \( x_i \) by showing that for all \( y \) with \( |y| = |x| \), \( y \notin B \).
+%         \item However, because we specifically chose \( y_i \) to be added to \( B \) in a way that \( V_i \) accepts \( x_i \) with \( y_i \), the verifier \( D_i \) cannot refute \( x_i \) correctly.
+%     \end{itemize}
+%     \item By diagonalization, we ensure that for each \( i \), there exists an \( x_i \) such that \( V_i^{S_i}(x_i, y_i) = 1 \) but \( D_i \) cannot universally refute it.
+% \end{enumerate}
+
+% \noindent \textbf{Step 7: Conclusion}
+
+% By constructing the oracle \( B \) in this manner, we ensure that there is a language \( L_B \in \text{NP}^B \) that is not in \( \text{coNP}^B \). Thus, we have demonstrated that \( \text{NP}^B \neq \text{coNP}^B \).
+
+% \[
+% \boxed{\text{Therefore, there exists an oracle } B \text{ such that } \text{NP}^B \neq \text{coNP}^B.}
+% \]
+
+\subsection*{Step 1: Setup and Definitions}
+
+\begin{itemize}
+    \item Let $M_1, M_2, M_3, \ldots$ be an enumeration of all oracle Turing machines.
+    \item $M_i$ denotes the $i$-th machine in the enumeration.
+    \item We will build the oracle $A$ in stages, ensuring that at each stage, certain properties hold.
+\end{itemize}
+
+\subsection*{Step 2: Building the Oracle $A$}
+
+We will construct $A$ iteratively. At each stage $i$, we ensure that $M_i$ does not correctly decide a certain language related to $A$. 
+
+\subsection*{Step 3: Simulating $\text{NP}$ Machines}
+
+For each $i$, consider the oracle Turing machine $M_i$. Define
+\[ L_i = \{ x \mid \exists y \in A \text{ such that } |x| = |y| \}. \]
+$L_i$ is in $\text{NP}^A$.
+
+\subsection*{Step 4: Ensuring Incorrect Decisions}
+
+For each $i$, perform the following steps:
+\begin{itemize}
+    \item Use the part of $A$ constructed so far.
+    \item Simulate $M_i$ on an input $0^m$, where $m$ is chosen to be sufficiently large (greater than lengths considered in previous steps).
+\end{itemize}
+
+\subsubsection*{Case 1: $M_i$ accepts $0^m$}
+
+Do not modify $A$. This ensures that $M_i$ might accept some input it should reject.
+
+\subsubsection*{Case 2: $M_i$ rejects $0^m$}
+
+We need to add a string to $A$ to ensure $M_i$ doesn't answer correctly.
+
+Since $M_i$ is an oracle Turing machine, it runs in polynomial time. It might query all strings of length $m$. To ensure it doesn't answer correctly, we need to consider the nature of $\text{coNP}$ machines:
+\begin{itemize}
+    \item A machine $M_i$ in $\text{coNP}$ accepts if and only if all computation paths accept.
+    \item Since $M_i$ rejects $0^m$, there is at least one computation path that rejects.
+    \item We only need to keep the answers to the queries in this rejecting path the same.
+    \item The number of queries in this path is polynomial, so there are exponentially many strings of length $m$ that this path doesn't query.
+    \item Add one such string to $A$ that this rejecting path does not query.
+\end{itemize}
+
+\subsection*{Step 5: Completeness of the Construction}
+
+By following the above steps, we ensure that for each $i$, $M_i$ does not correctly decide $L_i$ related to $A$. This iterative process constructs $A$ such that there exists a language $L \in \text{NP}^A$ that no machine in $\text{coNP}^A$ can decide correctly. Consequently, $\text{NP}^A \neq \text{coNP}^A$.
+
+\begin{mdframed}
+\begin{algorithm}[H]
+\caption{Constructing an oracle $A$ such that $\text{NP}^A \neq \text{coNP}^A$}
+\begin{algorithmic}[1]
+\STATE \textbf{Initialize:} $A \leftarrow \emptyset$
+\FOR{each $i \in \mathbb{N}$}
+    \STATE Let $M_i$ be the $i$-th oracle Turing machine in the enumeration
+    \STATE Choose a sufficiently large $m$ such that $m$ is greater than any length considered in previous steps
+    \STATE Simulate $M_i$ on input $0^m$ using the current $A$
+    \IF{$M_i$ accepts $0^m$}
+        \STATE Do not modify $A$
+    \ELSE
+        \STATE $M_i$ rejects $0^m$. Identify a rejecting computation path $P$
+        \STATE The path $P$ queries a polynomial number of strings of length $m$
+        \STATE Select a string $x$ of length $m$ that is not queried by $P$
+        \STATE Add the string $x$ to $A$: $A \leftarrow A \cup \{x\}$
+    \ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+\end{mdframed}
+
+\section*{Proof Explanation}
+
+We construct an oracle $A$ iteratively to ensure that $\text{NP}^A \neq \text{coNP}^A$. 
+
+\subsection*{Step-by-Step Construction}
+\begin{enumerate}
+    \item We start with $A$ initialized as an empty set.
+    \item For each $i$, corresponding to the $i$-th oracle Turing machine $M_i$, we choose a sufficiently large input length $m$.
+    \item We simulate $M_i$ on the input $0^m$ using the current contents of $A$.
+    \item If $M_i$ accepts $0^m$, we do not modify $A$ to allow the possibility of an incorrect decision by $M_i$ in the future.
+    \item If $M_i$ rejects $0^m$, there must be a rejecting computation path $P$. Since $P$ queries only a polynomial number of strings of length $m$, there are exponentially many strings of length $m$ that $P$ does not query.
+    \item We select one such unqueried string $x$ of length $m$ and add it to $A$.
+\end{enumerate}
+\subsection*{Conclusion}
+
+Through this construction, we have defined an oracle $A$ such that $\text{NP}^A \neq \text{coNP}^A$, proving the separation by diagonalizing against all potential $\text{coNP}$ machines.
+
+\[
+\boxed{\text{Therefore, there exists an oracle } A \text{ such that } \text{NP}^A \neq \text{coNP}^A.}
+\]
+
+\pagebreak
+\section{Problem 2}
+% \begin{algorithm}[H]
+% \caption{Determine if a graph has exactly one independent set of size \( k \)}
+% \begin{algorithmic}[1]
+% \REQUIRE Graph \( G \), integer \( k \)
+% \ENSURE True if \( G \) has exactly one independent set of size \( k \), False otherwise
+% \STATE Query NP oracle \( A \) to check if there is at least one independent set of size \( k \) in \( G \)
+% \IF{A(G, k) = False}
+%    \RETURN False
+% \ENDIF
+% \STATE Query NP oracle \( B \) to check if there is more than one independent set of size \( k \) in \( G \)
+% \IF{B(G, k) = True}
+%    \RETURN False
+% \ELSE
+%    \RETURN True
+% \ENDIF
+% \end{algorithmic}
+% \end{algorithm}
+
+% \section*{Proof}
+
+% To show that the problem of determining whether a graph \( G \) has exactly one independent set of size \( k \) is in \( \text{P}^{\text{NP}} \), we proceed as follows:
+
+% 1. Define the language \( L \) to be the set of pairs \( (G, k) \) where \( G \) is a graph and \( G \) has exactly one independent set of size \( k \).
+
+% 2. Construct an algorithm that uses an NP oracle to decide \( L \).
+
+% 3. The algorithm operates as follows:
+%    \begin{enumerate}
+%        \item Query the NP oracle \( A(G, k) \) to check if there is at least one independent set of size \( k \) in \( G \). If \( A(G, k) = \text{False} \), then there is no independent set of size \( k \) and the algorithm returns \text{False}.
+%        \item If \( A(G, k) = \text{True} \), then query the NP oracle \( B(G, k) \) to check if there is more than one independent set of size \( k \) in \( G \). If \( B(G, k) = \text{True} \), then there are multiple independent sets of size \( k \) and the algorithm returns \text{False}.
+%        \item If \( B(G, k) = \text{False} \), then there is exactly one independent set of size \( k \) in \( G \) and the algorithm returns \text{True}.
+%    \end{enumerate}
+
+% 4. The algorithm runs in polynomial time with a constant number of calls to an NP oracle, so the problem is in \( \text{P}^{\text{NP}} \).
+
+% Therefore, we have shown that the problem of determining whether a graph \( G \) has exactly one independent set of size \( k \) is in \( \text{P}^{\text{NP}} \).
+
+% \[
+% \boxed{\text{Thus, the problem is in } \text{P}^{\text{NP}}.}
+% \]
+
+% \begin{mdframed}
+% \begin{algorithm}[H]
+% \caption{Determine if a graph has exactly one independent set of size \( k \)}
+% \begin{algorithmic}[1]
+% \REQUIRE Graph \( G \), integer \( k \)
+% \ENSURE True if \( G \) has exactly one independent set of size \( k \), False otherwise
+% \STATE Query NP oracle \( C \) to check if there is at least one independent set of size \( k \) in \( G \): $C(G, 0)$
+% \IF{$C(G, 0) = \text{False}$}
+%    \RETURN False
+% \ENDIF
+% \STATE Find an independent set \( S \) of size \( k \) in \( G \) using oracle \( C \)
+% \FOR{each vertex $v$ in $S$}
+%     \STATE Remove vertex \( v \) from \( G \) to get \( G' \)
+%     \STATE Query NP oracle \( C \) to check if there is an independent set of size \( k \) in \( G' \): $C(G', 0)$
+%     \IF{$C(G', 0) = \text{True}$}
+%         \RETURN False
+%     \ENDIF
+% \ENDFOR
+% \RETURN True
+% \end{algorithmic}
+% \end{algorithm}
+% \end{mdframed}
+
+% \section*{Proof}
+
+% To demonstrate that the problem \(\{(G, k) \mid G \text{ is a graph with exactly one independent set of cardinality } k\}\) is in \(\text{P}^{\text{NP}}\), we show that it can be decided by a polynomial-time deterministic Turing machine with access to an NP oracle.
+
+% Let \( M \) be a deterministic Turing machine that solves this problem with access to an NP oracle \( C_k \). The oracle \( C_k \) takes a graph \( G \) and an integer \( k \) as input and returns \textit{yes} if there exists an independent set of size \( k \) in \( G \), and \textit{no} otherwise. This is an NP problem because determining the existence of an independent set of size \( k \) is NP-complete.
+
+% \section*{Algorithm Using Turing Machine \( M \) with Oracle \( C_k \)}
+
+% \begin{enumerate}
+%     \begin{itemize}
+%         \item \( M \) queries the oracle \( C_k \) with the input \((G, k)\): To check for an independent set of size \( k \) in \( G \)
+%         \item If \( C_k \) returns \textit{no}, \( M \) halts and returns \textit{no} this indicates \( G \) does not have any independent set of size \( k \)).
+%     \end{itemize}
+%     \item \textbf{Uniqueness Check}:
+%     \begin{itemize}
+%         \item If \( C_k \) returns \textit{yes}, \( M \) receives the independent set \( S \) of size \( k \) (provided by the oracle).
+%         \item For each vertex \( v \) in \( S \):
+%         \begin{itemize}
+%             \item \( M \) modifies the graph \( G \) by removing vertex \( v \) to get the modified graph \( G' \).
+%             \item \( M \) queries the oracle \( C_k \) again with the modified graph \( G' \): "Does there exist an independent set of size \( k \) in \( G' \)?"
+%             \item If \( C_k \) returns \textit{yes} for any \( v \), \( M \) halts and returns \textit{no} (indicating \( G \) has more than one independent set of size \( k \)).
+%         \end{itemize}
+%     \end{itemize}
+%     \item \textbf{Conclusion}:
+%     \begin{itemize}
+%         \item If all queries return \textit{no}, \( M \) halts and returns \textit{yes} (indicating \( G \) has exactly one independent set of size \( k \)).
+%     \end{itemize}
+% \end{enumerate}
+
+% \section*{Proof of Polynomial Time Execution}
+
+% The NP oracle \( C_k \) can instantly determine if there is an independent set of size \( k \) in \( G \). Removing a vertex \( v \) from \( G \) to obtain \( G' \) can be done in \( O(|V| + |E|) \) time. The loop over vertices in \( S \) runs \( k \) times. Each iteration involves modifying the graph and querying the oracle, both polynomial-time operations. Since the number of queries is at most \( k \), the overall algorithm runs in polynomial time. Thus, the problem is in \(\text{P}^{\text{NP}}\) because it can be solved by a polynomial-time deterministic Turing machine with access to an NP oracle \( C_k \).
+
+% \[
+% \boxed{\text{Therefore, there exists an oracle } A \text{ such that } \text{NP}^A \neq \text{coNP}^A.}
+% \]
+To demonstrate that the problem \(\{(G, k) \mid G \text{ is a graph with exactly one independent set of cardinality } k\}\) is in \(\text{P}^{\text{NP}}\), we show that it can be decided by a polynomial-time deterministic Turing machine with access to an NP oracle.
+
+Let \( M \) be a deterministic Turing machine that solves this problem with access to a combined NP oracle \( C \). The oracle \( C \) queries two NP oracles \( A \) and \( B \), and returns the appropriate response based on their outputs.
+
+\section*{Algorithm Using Turing Machine \( M \) with Combined Oracle \( C \)}
+
+\begin{mdframed}
+\begin{algorithm}[H]
+\caption{Determine if a graph has exactly one independent set of size \( k \)}
+\begin{algorithmic}[1]
+\REQUIRE Graph \( G \), integer \( k \)
+\ENSURE True if \( G \) has exactly one independent set of size \( k \), False otherwise
+\STATE Query NP oracle \( C \) to check if \( G \) has exactly one independent set of size \( k \)
+\IF{$C(G, k) = \text{no}$}
+   \RETURN False
+\ENDIF
+\RETURN True
+\end{algorithmic}
+\end{algorithm}
+\end{mdframed}
+
+\section*{Definition of Combined Oracle \( C \)}
+
+Define the combined NP oracle \( C \) as follows:
+\[ C(G, k) = 
+\begin{cases} 
+\text{no} & \text{if } A(G, k) = \text{False} \\
+\text{no} & \text{if } B(G, k) = \text{True} \\
+\text{yes} & \text{if } A(G, k) = \text{True} \text{ and } B(G, k) = \text{False}
+\end{cases}
+\]
+where:
+\begin{itemize}
+    \item \( A(G, k) \) checks if there is at least one independent set of size \( k \) in \( G \).
+    \item \( B(G, k) \) checks if there is more than one independent set of size \( k \) in \( G \).
+\end{itemize}
+
+\section*{Proof}
+
+To show that the problem of determining whether a graph \( G \) has exactly one independent set of size \( k \) is in \( \text{P}^{\text{NP}} \), we proceed as follows:
+
+\begin{enumerate}
+    \item Define the language \( L \) to be the set of pairs \( (G, k) \) where \( G \) is a graph and \( G \) has exactly one independent set of size \( k \).
+    \item Construct an algorithm that uses the combined NP oracle \( C \) to decide \( L \).
+    \item The algorithm operates as follows:
+    \begin{enumerate}
+        \item Query the combined NP oracle \( C(G, k) \):
+        \begin{itemize}
+            \item If \( C(G, k) = \text{no} \), then \( G \) does not have exactly one independent set of size \( k \) and the algorithm returns \text{False}.
+            \item If \( C(G, k) = \text{yes} \), then \( G \) has exactly one independent set of size \( k \) and the algorithm returns \text{True}.
+        \end{itemize}
+    \end{enumerate}
+\end{enumerate}
+
+\section*{Proof of Polynomial Time Execution}
+
+The combined NP oracle \( C \) internally queries oracles \( A \) and \( B \), which are both NP oracles. Each query to \( A \) and \( B \) runs in polynomial time( \(O(|V| + |E|)\)). The overall algorithm runs in polynomial time with a constant number of calls to the combined NP oracle \( C \). Thus, the problem is in \( \text{P}^{\text{NP}} \).
+
+\[
+\boxed{\text{Thus, the problem is in } \text{P}^{\text{NP}}.}
+\]
+
+
+\pagebreak
+\section{Problem 3}
+
+\section*{Theorem}
+If PH has a complete problem (with respect to usual Karp reductions), then PH collapses.
+
+\section*{Proof}
+
+\subsection*{Understanding the Polynomial Hierarchy (PH)}
+The Polynomial Hierarchy (PH) is a multi-level classification of complexity classes:
+\begin{itemize}
+  \item Base level: \( \Sigma_0^P = \Pi_0^P = P \).
+  \item Higher levels: \( \Sigma_{k+1}^P = \text{NP}^{\Sigma_k^P} \) and \( \Pi_{k+1}^P = \text{coNP}^{\Sigma_k^P} \).
+\end{itemize}
+
+\subsection*{PH-Complete Problems}
+A problem is PH-complete if it represents the upper bound of complexity within the entire Polynomial Hierarchy.
+
+\subsection*{Implications of Solving a PH-Complete Problem level $k$}
+
+If the PH complete problem exists at level $k$ then the Polynomial Hierarchy collapses to that level. That is all the problems in PH can be reduced to this problem using karp-reductions and the polynomial hierarchy will not go beyond level $k$.
+
+\subsection*{Proof}
+\begin{enumerate}
+    \item Assume PH has a complete problem \( L \) at level \( \Sigma_k^P \):
+    \begin{itemize}
+        \item Let \( L \) be a \( \Sigma_k^P \)-complete problem.
+    \end{itemize}
+    \begin{itemize}
+    \item By definition of completeness, every problem in \( \Sigma_j^P \) (such that \( j \geq k \)) can be reduced to \( L \) in polynomial time.
+        \item Since \( L \in \Sigma_k^P \), there exists a polynomial-time reduction from any problem in \( \Sigma_j^P \) to \( L \), which implies that \( \Sigma_j^P \subseteq \Sigma_k^P \).
+    \end{itemize}
+\bigskip
+    \item Implications of \( \Sigma_j^P \subseteq \Sigma_k^P \):
+    \begin{itemize}
+        \item If \( \Sigma_j^P \subseteq \Sigma_k^P \) and \( k < j \), it means that \( \Sigma_j^P \) problems can be solved with the resources available at level \( k \).
+        \item Therefore, \( \Sigma_k^P = \Sigma_j^P \).
+    \end{itemize}
+    \item Resulting Collapse of the Polynomial Hierarchy:
+    \begin{itemize}
+        \item Since \( \Sigma_k^P = \Sigma_j^P \), for any \( j \geq k \), we have \( \Sigma_k^P = \Sigma_j^P \), leading to a collapse of the hierarchy to level \( k \).
+    \end{itemize}
+    \item Special Case \( k = 1 \):
+    \begin{itemize}
+        \item If \( k = 1 \) and \( \Sigma_1^P \) has a complete problem that can be solved in \( P \) (level 0), it implies \( \Sigma_1^P = P \), and thus \( NP = P \).
+        \item This would lead to \( \Sigma_i^P = P \) for all \( i \geq 1 \), collapsing PH to \( P \).
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Conclusion}
+If PH has a complete problem at any level \( \Sigma_k^P \), then PH collapses to that level. Therefore, the existence of a complete problem in PH implies that the polynomial hierarchy collapses to a finite level.
+
+\[
+\boxed{\text{Thus, if PH has a complete problem, PH collapses.}}
+\]
+
+
+
+
+
+\end{document}
